@@ -1,20 +1,28 @@
 from flask import render_template
 from app import app
 
+from app.models.forms import LoginForm
+from app.models.tables import User
+
 @app.route("/index")
 @app.route("/") #decorator, é uma caracteristica do python que coloca antes e uma função. Para aplicar uma função em cima de outra
 def index():    #FUnção route em cima da função index '/' é a rota da página
     return render_template('index.html')
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    return render_template('base.html')
+    form = LoginForm()
+    if form.validate_on_submit():
+        print(form.username.data)
+        print(form.password.data)
+    else:
+        print(form.errors)
+    return render_template('login.html', form=form)
 
-
-# @app.route("/test", defaults={'name' : None})
-# @app.route("/test/<name>")#Chamando uma variavel
-# def test(name): #2 contrutores? 
-#     if name:
-#         return "Olar, <b> %s</b> t!" % name #imprimindo com a variavel
-#     else:
-#         return "Olar, usuário"
+# @app.route("/teste/<info>")
+# @app.route("/teste", defaults={"info": None})
+# def teste(info):
+#     i = User("Jho", "1234", "Jonathan", "j@j.com")
+#     db.session.add(i)
+#     db.session.commit()
+#     return "Ok"
