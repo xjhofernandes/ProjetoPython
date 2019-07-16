@@ -12,7 +12,7 @@ class User(db.Model):
     def is_authenticated(self):
         return True
     @property
-    def is_activate(self):
+    def is_active(self):
         return True
     @property
     def isanonymous(self):
@@ -20,7 +20,7 @@ class User(db.Model):
 
     def get_id(self):
         return str(self.id)
-        
+
     #Não esqueça mais desta porra, obrigado.
     def __init__ (self, username, password, name, email):
         self.username = username
