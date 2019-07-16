@@ -6,12 +6,12 @@ from flask_migrate import Migrate, MigrateCommand
 
 app = Flask(__name__) #instância da classe Flask
 app.config.from_object('config')
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///storage.db' 
-# Antes o config estava aqui
+
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
+from app.models import tables
 from app.controllers import default
