@@ -45,7 +45,7 @@
 
   <div class="textColor" >
   {% if current_user.is_authenticated %}
-    <h4 role="presentation"><a href="{{ url_for('logout') }}">Logout, {{current_user}}</a></h4>
+    <h4 role="presentation"><a href="{{ url_for('logout') }}">Logout, {{current_user.name}}</a></h4>
   {% else %}
     <h4 role="presentation"><a href="{{ url_for('login') }}">Login</a></h4>
   {% endif %}
