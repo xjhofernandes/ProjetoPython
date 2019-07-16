@@ -1,4 +1,5 @@
-from flask import render_template
+from flask import render_template, flash
+from flask_login import login_user
 from app import app, db
 
 from app.models.tables import User
@@ -13,17 +14,22 @@ def index():    #FUnção route em cima da função index '/' é a rota da pági
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        print(form.username.data)
-        print(form.password.data)
+        user = User.query.filter_by(username=form.username.data).first()
+        if user and user.password == form.data.password:
+            login_user(user)
+            flash("Logged in")
+        else:
+            flash("Invalid Login")
     else:
         print(form.errors)
     return render_template('login.html', form=form)
 
+#User.query.filter_by(password="1234").all()  é o Linq/Lambad do Flask
+#r.name, é possível alterar o dado do bando de dados (update)
 
 @app.route("/teste/<info>")
 @app.route("/teste", defaults={"info": None})
 def teste(info):
-    i = User("Vitoria", "1234", "Vitoria Fernandes", "vitfCastro@jona.com")
-    db.session.add(i)
-    db.session.commit()
+    r = User.query.filter_by(password="1234").first() 
+    print(r.name, r.email)
     return "OK"
