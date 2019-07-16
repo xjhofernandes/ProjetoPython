@@ -1,9 +1,14 @@
-from flask import render_template, flash
-from flask_login import login_user
-from app import app, db
+from flask import render_template, flash, redirect, url_for #Render_Template é uma função do Flask para abrir os arquivos '.html'
+from flask_login import login_user, logout_user
+from app import app, db, lm
 
 from app.models.tables import User
 from app.models.forms import LoginForm
+
+#load_user é uma função que faz o carregamento dos usuários
+@lm.user_loader
+def load_user(id):
+    return User.query.filter_by(id=id).first()
 
 @app.route("/index")
 @app.route("/") #decorator, é uma caracteristica do python que coloca antes e uma função. Para aplicar uma função em cima de outra
@@ -17,12 +22,18 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         if user and user.password == form.password.data:
             login_user(user)
+            return redirect(url_for("index"))
             flash("Logged in")
-        else:
+        else:  
             flash("Invalid Login")
-    else:
-        print(form.errors)
     return render_template('login.html', form=form)
+
+#dar um free no usuario
+@app.route("/logout")
+def logout():
+    logout_user()
+    flash("Logged out.")
+    return redirect(url_for("index"))
 
 #User.query.filter_by(password="1234").all()  é o Linq/Lambad do Flask
 #r.name, é possível alterar o dado do bando de dados (update)
@@ -32,4 +43,5 @@ def login():
 def teste(info):
     r = User.query.filter_by(password="1234").first() 
     print(r.name, r.email)
+    
     return "OK"

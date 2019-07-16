@@ -7,7 +7,7 @@
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v3.8.5">
     <title>Minha Empresa · Bootstrap</title>
-
+    
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="{{ url_for('static', 
     filename='css/bootstrap.min.css' ) }}">
@@ -21,6 +21,12 @@
           -ms-user-select: none;
           user-select: none;
         }
+
+        .textColor {
+        color: #008000;
+        background-color: white;
+        font-size: large;
+         }
   
         @media (min-width: 768px) {
           .bd-placeholder-img-lg {
@@ -34,20 +40,29 @@
   <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
     <div class="col-12 text-center">
       <a class="navbar-brand" href="#">Empresa</a>
-    </div>
   </nav>
+  </div>
 
-  <div class="alert alert-warning">
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
+  <div class="textColor" >
+  {% if current_user.is_authenticated %}
+    <h4 role="presentation"><a href="{{ url_for('logout') }}">Logout, {{current_user}}</a></h4>
+  {% else %}
+    <h4 role="presentation"><a href="{{ url_for('login') }}">Login</a></h4>
+  {% endif %}
+  </div>
+
+
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+      <div class="alert alert-warning">
         <ul class=flashes>
           {% for message in messages %}
             <li>{{ message }}</li>
           {% endfor %}
         </ul>
-  </div>
-      {% endif %}
-    {% endwith %}
+      </div>
+        {% endif %}
+        {% endwith %}
 
 {% block content %}
 {% endblock %}
