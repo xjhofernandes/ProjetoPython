@@ -9,10 +9,10 @@ from app.models.forms import LoginForm, SearchForm #chamando o forms
 
 @lm.user_loader #Carregar o objeto de usuario no flask_login
 def load_user(username):
-    u = mongo.db.users.find_one({"_id": username})
+    u = mongo.db.users.find_one({"username": username})
     if not u:
         return None
-    return User(u['_id'])
+    return User(u['username'])
 
 @app.route("/index",methods=['GET', 'POST'])
 @app.route("/", methods=['GET', 'POST']) #decorator, é uma caracteristica do python que coloca antes e uma função. Para aplicar uma função em cima de outra
@@ -28,15 +28,16 @@ def index():    #FUnção route em cima da função index '/' é a rota da pági
 def login():
     form = LoginForm()
     if request.method == 'POST' and form.validate_on_submit():
-        user = mongo.db.users.find_one({"_id": form.username.data})
+        user = mongo.db.users.find_one({"username": form.username.data})
         print(user)
         if user and User.validate_login(user['password'], form.password.data):
-            user_obj = User(user['_id'])
+            user_obj = User(user['username'])
             login_user(user_obj)
             flash("Logged in successfully")
+            print(login_user)
             return redirect(url_for("index"))
         flash("Wrong username or password")
-    return render_template('login.html', title='login', form=form)
+    return render_template('login.html', form=form)
 
 
 
@@ -46,9 +47,6 @@ def logout():
     logout_user()
     flash("Logged out.")
     return redirect(url_for("index"))
-
-#User.query.filter_by(password="1234").all()  é o Linq/Lambad do Flask
-#r.name, é possível alterar o dado do bando de dados (update)
 
 @app.route("/teste/<info>")
 @app.route("/teste", defaults={"info": None})
@@ -69,5 +67,10 @@ def search_results(search):
     print(user)
     if user:
         return "O usuario " + search.data['search'] + " Existe no banco"
+        #return user.to_json()
+        #return redirect(url_for("index"))
+    return "Não existe False"
 
-    return "não achou"
+@app.route('/todo')
+def todolist():
+    return render_template('todo.html')
