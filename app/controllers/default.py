@@ -23,7 +23,6 @@ def index():    #FUnção route em cima da função index '/' é a rota da pági
         return search_results(search)
     return render_template('index.html', online_users = online_users, form = search)
 
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -39,8 +38,6 @@ def login():
         flash("Wrong username or password")
     return render_template('login.html', form=form)
 
-
-
 #dar um free no objeto usuario do flask_login
 @app.route("/logout")
 def logout():
@@ -48,13 +45,14 @@ def logout():
     flash("Logged out.")
     return redirect(url_for("index"))
 
+#Criação de um usário. Pode auxiliar em uma tela de registro.
 @app.route("/teste/<info>")
 @app.route("/teste", defaults={"info": None})
 def teste(info):
     hashed_value = generate_password_hash('1234')
     store_password = hashed_value
     user_collection = mongo.db.users
-    user_collection.insert({'username' : 'senha','password' : store_password})
+    user_collection.insert({'username' : 'jonathan','password' : store_password})
     return hashed_value
 
 @app.route('/results')
@@ -66,10 +64,10 @@ def search_results(search):
     user = mongo.db.users.find_one({"username": search.data['search']})
     print(user)
     if user:
-        return "O usuario " + search.data['search'] + " Existe no banco"
-        #return user.to_json()
+        return "O usuario " + user['username'] + " Existe no banco"
         #return redirect(url_for("index"))
     return "Não existe False"
+
 
 @app.route('/todo')
 def todolist():
